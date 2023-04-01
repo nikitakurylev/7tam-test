@@ -5,7 +5,7 @@ public class LobbyManager : MonoBehaviour
 {
     private NetworkRunner _runner;
 
-    private void Start()
+    private void Awake()
     {
         _runner = gameObject.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;

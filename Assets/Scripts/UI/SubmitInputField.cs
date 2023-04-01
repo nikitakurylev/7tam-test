@@ -6,7 +6,7 @@ public class SubmitInputField : MonoBehaviour
 {
     private InputField _inputField;
 
-    void Start()
+    void Awake()
     {
         _inputField = GetComponent<InputField>();
         if (!_inputField)
