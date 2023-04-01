@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
-    [FormerlySerializedAs("_playerPrefab")] [SerializeField]
-    private NetworkPrefabRef playerPrefab;
-
+    [SerializeField] private NetworkPrefabRef playerPrefab;
+    private IInputMethod _inputMethod;
     private readonly Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new();
 
 
@@ -24,6 +22,8 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
                 runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
             _spawnedCharacters.Add(player, networkPlayerObject);
         }
+
+        _inputMethod = new AxisInputMethod();
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -37,6 +37,10 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        var data = new NetworkInputData();
+        if(_inputMethod != null)
+            data.Direction = _inputMethod.GetDirection();
+        input.Set(data);
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)

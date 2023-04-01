@@ -441,6 +441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab:
     RawGuidValue: e39fdac871ca1a945aef6139ef3b3c35
+  inputMethod: {fileID: 0}
 --- !u!1001 &1955797902
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -95,6 +95,7 @@ GameObject:
   - component: {fileID: 525396631566796736}
   - component: {fileID: 525396631566796798}
   - component: {fileID: 525396631566796737}
+  - component: {fileID: 2280509079687323487}
   m_Layer: 0
   m_Name: PlayerPrefab
   m_TagString: Untagged
@@ -141,6 +142,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 525396631566796737}
+  - {fileID: 2280509079687323487}
   SimulationBehaviours: []
 --- !u!114 &525396631566796737
 MonoBehaviour:
@@ -152,6 +154,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 2015907558, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interpolationDataSource: 0
+--- !u!114 &2280509079687323487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 525396631566796739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3026862515f528346aa4f03b212f2df9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
