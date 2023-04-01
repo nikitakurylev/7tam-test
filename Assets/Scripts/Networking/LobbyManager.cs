@@ -1,8 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
+
 public class LobbyManager : MonoBehaviour
 {
     private NetworkRunner _runner;
@@ -28,7 +26,7 @@ public class LobbyManager : MonoBehaviour
     {
         StartGame(GameMode.Host, lobbyName);
     }
-    
+
     public void Join(string lobbyName)
     {
         StartGame(GameMode.Client, lobbyName);
