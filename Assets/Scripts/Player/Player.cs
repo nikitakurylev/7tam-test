@@ -6,7 +6,10 @@ public class Player : NetworkBehaviour
 {
     [SerializeField] private NetworkPrefabRef bulletPrefab;
     [SerializeField] private float fireRate;
-    [Networked] private TickTimer delay { get; set; }
+    [SerializeField] private Color[] colors;
+    [SerializeField] private SpriteRenderer body;
+    [Networked] private TickTimer Delay { get; set; }
+    [Networked(OnChanged = nameof(UpdateColor))] public int PlayerNumber { get; set; }
     private IMovement _movement;
 
     private void Awake()
@@ -22,13 +25,18 @@ public class Player : NetworkBehaviour
         {
             _movement.Move(data.Direction);
 
-            if (delay.ExpiredOrNotRunning(Runner) && data.IsFireDown)
+            if (Delay.ExpiredOrNotRunning(Runner) && data.IsFireDown)
             {
-                delay = TickTimer.CreateFromSeconds(Runner, fireRate);
+                Delay = TickTimer.CreateFromSeconds(Runner, fireRate);
                 Runner.Spawn(bulletPrefab, transform.position + transform.up,
                     Quaternion.LookRotation(transform.forward, transform.up), Object.InputAuthority,
                     (runner, o) => { o.GetComponent<Bullet>().Init(); });
             }
         }
+    }
+    
+    protected static void UpdateColor(Changed<Player> changed)
+    {
+        changed.Behaviour.body.color = changed.Behaviour.colors[changed.Behaviour.PlayerNumber % changed.Behaviour.colors.Length];
     }
 }

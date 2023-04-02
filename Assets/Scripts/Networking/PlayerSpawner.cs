@@ -13,13 +13,13 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        Debug.Log("Player " + player.PlayerId + " joined");
         if (runner.IsServer)
         {
             Vector3 spawnPosition =
                 new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 0, 0);
             NetworkObject networkPlayerObject =
                 runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
+            networkPlayerObject.GetComponent<Player>().PlayerNumber = _spawnedCharacters.Count;
             _spawnedCharacters.Add(player, networkPlayerObject);
         }
 
