@@ -37,9 +37,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        var data = new NetworkInputData();
-        if(_inputMethod != null)
-            data.Direction = _inputMethod.GetDirection();
+        var data = _inputMethod?.GetInputData() ?? new NetworkInputData();
         input.Set(data);
     }
 
