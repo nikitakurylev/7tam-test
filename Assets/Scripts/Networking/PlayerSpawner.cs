@@ -33,7 +33,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        _inputMethod = new AxisInputMethod();
+        _inputMethod = FindObjectOfType<TouchInput>() ?? (IInputMethod) new AxisInputMethod();
         if (!runner.IsServer)
         {
             _readInput = true;
