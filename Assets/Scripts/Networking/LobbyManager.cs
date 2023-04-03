@@ -1,6 +1,7 @@
 using System.Linq;
 using Fusion;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class LobbyManager : MonoBehaviour
         {
             GameMode = mode,
             SessionName = lobbyName,
-            Scene = 1,
+            Scene = SceneManager.GetSceneByName("Game").buildIndex,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
