@@ -18,6 +18,11 @@ public class Player : NetworkBehaviour
         if (_movement == null)
             Debug.LogWarning("No component of IMovement type attached!");
     }
+        
+    protected static void UpdateColor(Changed<Player> changed)
+    {
+        changed.Behaviour.body.color = changed.Behaviour.colors[changed.Behaviour.PlayerNumber % changed.Behaviour.colors.Length];
+    }
 
     public override void FixedUpdateNetwork()
     {
@@ -33,10 +38,5 @@ public class Player : NetworkBehaviour
                     (runner, o) => { o.GetComponent<Bullet>().Init(); });
             }
         }
-    }
-    
-    protected static void UpdateColor(Changed<Player> changed)
-    {
-        changed.Behaviour.body.color = changed.Behaviour.colors[changed.Behaviour.PlayerNumber % changed.Behaviour.colors.Length];
     }
 }

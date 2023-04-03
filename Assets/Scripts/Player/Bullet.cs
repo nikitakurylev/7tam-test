@@ -4,6 +4,7 @@ using UnityEngine;
 public class Bullet : NetworkBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private int damagePoints; 
     [Networked] private TickTimer Life { get; set; }
 
     public void Init()
@@ -16,5 +17,11 @@ public class Bullet : NetworkBehaviour
     {
         if(Life.Expired(Runner))
             Runner.Despawn(Object);
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        collision.gameObject.GetComponent<IDamageable>()?.Damage(damagePoints);
+        Runner.Despawn(Object);
     }
 }

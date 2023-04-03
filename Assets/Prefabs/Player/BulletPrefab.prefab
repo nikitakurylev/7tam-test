@@ -141,6 +141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interpolationDataSource: 0
   speed: 10
+  damagePoints: 1
 --- !u!1 &1772277200261996804
 GameObject:
   m_ObjectHideFlags: 0
