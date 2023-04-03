@@ -1,3 +1,4 @@
+using System.Linq;
 using Fusion;
 using UnityEngine;
 
@@ -7,6 +8,8 @@ public class LobbyManager : MonoBehaviour
 
     private void Awake()
     {
+        var otherLobbyManager = FindObjectsOfType<LobbyManager>().FirstOrDefault(otherLobbyManager => otherLobbyManager != this);
+        DestroyImmediate(otherLobbyManager?.gameObject);
         _runner = gameObject.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
     }

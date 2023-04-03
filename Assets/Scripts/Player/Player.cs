@@ -2,6 +2,7 @@ using Fusion;
 using UnityEngine;
 
 [RequireComponent(typeof(IMovement))]
+[RequireComponent(typeof(Score))]
 public class Player : NetworkBehaviour
 {
     [SerializeField] private NetworkPrefabRef bulletPrefab;
@@ -11,12 +12,17 @@ public class Player : NetworkBehaviour
     [Networked] private TickTimer Delay { get; set; }
     [Networked(OnChanged = nameof(UpdateColor))] public int PlayerNumber { get; set; }
     private IMovement _movement;
+    private Score _score;
+    public int Score => _score.Coins;
 
     private void Awake()
     {
         _movement = GetComponent<IMovement>();
         if (_movement == null)
             Debug.LogWarning("No component of IMovement type attached!");
+        _score = GetComponent<Score>();
+        if (_score == null)
+            Debug.LogWarning("No Score attached!");
     }
         
     protected static void UpdateColor(Changed<Player> changed)

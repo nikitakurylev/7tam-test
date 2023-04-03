@@ -5,7 +5,7 @@ public class BarIndicator : Indicator
 {
     private SpriteRenderer _spriteRenderer;
     
-    void Start()
+    void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
         if(!_spriteRenderer)

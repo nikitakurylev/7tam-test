@@ -1,29 +1,47 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.Events;
+using Object = UnityEngine.Object;
 
 public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPrefabRef playerPrefab;
     private IInputMethod _inputMethod;
     private readonly Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new();
+    private int alivePlayerCount;
+    private UnityEvent<string> _onGameEnd = new();
 
+    private void OnPlayerDied(NetworkRunner runner)
+    {
+        if (!runner.IsServer) return;
+        alivePlayerCount--;
+        if (alivePlayerCount != 1)
+            return;
+        Player winner = _spawnedCharacters.Values.Select(o => o.GetComponent<Player>()).Aggregate((p1, p2) => p1.Score > p2.Score ? p1 : p2);
+        FindObjectOfType<GameEndWindow>()?.RPC_GameEnd("Player " + (winner.PlayerNumber + 1) + " wins with " + winner.Score + " coins!");
+    }
 
+    public void AddGameEndListener(UnityAction<string> onGameEnd)
+    {
+        _onGameEnd.AddListener(onGameEnd);
+    }
+    
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
-        {
-            Vector3 spawnPosition =
-                new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 3, 0, 0);
-            NetworkObject networkPlayerObject =
-                runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
-            networkPlayerObject.GetComponent<Player>().PlayerNumber = _spawnedCharacters.Count;
-            _spawnedCharacters.Add(player, networkPlayerObject);
-        }
-
         _inputMethod = new AxisInputMethod();
+        if (!runner.IsServer) return;
+        Vector3 spawnPosition =
+            new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 2 - 6, 0, 0);
+        NetworkObject networkPlayerObject =
+            runner.Spawn(playerPrefab, spawnPosition, Quaternion.identity, player);
+        networkPlayerObject.GetComponent<Player>().PlayerNumber = _spawnedCharacters.Count;
+        networkPlayerObject.GetComponent<HealthDamageable>()?.AddDeathListener(OnPlayerDied);
+        _spawnedCharacters.Add(player, networkPlayerObject);
+        alivePlayerCount++;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -32,6 +50,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         {
             runner.Despawn(networkObject);
             _spawnedCharacters.Remove(player);
+            OnPlayerDied(runner);
         }
     }
 
