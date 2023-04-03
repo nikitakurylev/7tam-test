@@ -13,15 +13,17 @@ public class LobbyManager : MonoBehaviour
         DestroyImmediate(otherLobbyManager?.gameObject);
         _runner = gameObject.AddComponent<NetworkRunner>();
         _runner.ProvideInput = true;
+        DontDestroyOnLoad(gameObject);
     }
 
     async void StartGame(GameMode mode, string lobbyName)
     {
+        SceneManager.LoadScene("Loading");
         await _runner.StartGame(new StartGameArgs()
         {
             GameMode = mode,
             SessionName = lobbyName,
-            Scene = SceneManager.GetSceneByName("Game").buildIndex,
+            Scene = 2,
             SceneManager = gameObject.AddComponent<NetworkSceneManagerDefault>()
         });
     }
