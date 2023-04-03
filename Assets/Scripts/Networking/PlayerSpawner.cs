@@ -14,6 +14,7 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     private readonly Dictionary<PlayerRef, NetworkObject> _spawnedCharacters = new();
     private int alivePlayerCount;
     private UnityEvent<string> _onGameEnd = new();
+    private bool _readInput;
 
     private void OnPlayerDied(NetworkRunner runner)
     {
@@ -33,7 +34,11 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
         _inputMethod = new AxisInputMethod();
-        if (!runner.IsServer) return;
+        if (!runner.IsServer)
+        {
+            _readInput = true;
+            return;
+        }
         Vector3 spawnPosition =
             new Vector3((player.RawEncoded % runner.Config.Simulation.DefaultPlayers) * 2 - 6, 0, 0);
         NetworkObject networkPlayerObject =
@@ -42,6 +47,8 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
         networkPlayerObject.GetComponent<HealthDamageable>()?.AddDeathListener(OnPlayerDied);
         _spawnedCharacters.Add(player, networkPlayerObject);
         alivePlayerCount++;
+        if (alivePlayerCount > 1)
+            _readInput = true;
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
@@ -56,6 +63,8 @@ public class PlayerSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        if(!_readInput)
+            return;
         var data = _inputMethod?.GetInputData() ?? new NetworkInputData();
         input.Set(data);
     }
